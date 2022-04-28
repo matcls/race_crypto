@@ -4,7 +4,10 @@ const express = require("express");
 const socketIO = require("socket.io");
 const axios = require("axios");
 
-const server = express().listen(PORT, () => {
+const app = express();
+app.use(express.json());
+
+const server = app.listen(PORT, () => {
   console.log(`Listining to ${PORT}`);
 });
 
@@ -18,7 +21,7 @@ socketHandler.on("connection", (socket) => {
     console.log("Client disconnected!");
   });
   console.log("Client Connected!");
-  socket.emit("crypto", "Connected to RACE!");
+  socket.emit("crypto", "Hello RACE Client!");
 });
 
 const getPrices = () => {
@@ -50,4 +53,54 @@ const getPrices = () => {
 
 setInterval(() => {
   getPrices();
-}, 20000);
+}, 6000);
+
+app.get("/cryptos/profile", (req, res) => {
+  res.json({ error: true, message: "Missing Crypto Id in the API URL" });
+});
+
+app.get("/cryptos/profile/:id", (req, res) => {
+  const cryptoId = req.params.id;
+
+  axios
+    .get(`${process.env.BASE_URL_V2}/${cryptoId}/profile`, {
+      headers: {
+        "x-messari-api-key": process.env.API_KEY,
+      },
+    })
+    .then((resposeData) => {
+      res.json(resposeData.data.data);
+    })
+    .catch((err) => {
+      res.json({
+        error: true,
+        message: "Error Fetching Prices Data From API",
+        errorDetails: err,
+      });
+    });
+});
+
+app.get("/cryptos/market-data", (req, res) => {
+  res.json({ error: true, message: "Missing Crypto Id in the API URL" });
+});
+
+app.get("/cryptos/market-data/:id", (req, res) => {
+  const cryptoId = req.params.id;
+  axios
+    .get(`${process.env.BASE_URL_V1}/${cryptoId}/metrics/market-data`, {
+      headers: {
+        "x-messari-api-key": process.env.API_KEY,
+      },
+    })
+
+    .then((resposeData) => {
+      res.json(resposeData.data.data);
+    })
+    .catch((err) => {
+      res.json({
+        error: true,
+        message: "Error Fetching Prices Data From API",
+        errorDetails: err,
+      });
+    });
+});
