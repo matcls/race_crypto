@@ -6,29 +6,9 @@ import { socket } from '../App';
 
 import { LIGHTGREY, LIGHTBLACK } from '../consts/app-consts';
 
-const myIcon = <Icon name="rocket" size={30} color="#900" />;
 
 export const HomeScreen = ({ navigation }: { navigation: any }) => {
-  //const [cryptoList, setCryptoList] = useState();
-
-  const cryptoList: Crypto[] = [
-    {
-      id: '1',
-      name: 'BTC',
-      price: 38001.64,
-    },
-    {
-      id: '2',
-      name: 'ETH',
-      price: 4025.0,
-    },
-    {
-      id: '3',
-      name: 'SOL',
-      price: 250.21,
-    },
-  ];
-
+  const [cryptoList, setCryptoList] = useState();
 
   useEffect(() => {
     socket.on('crypto', data => {
@@ -41,12 +21,14 @@ export const HomeScreen = ({ navigation }: { navigation: any }) => {
 
   const renderItem = ({ item }: { item: Crypto }) => {
     return (
-      <Pressable
-        style={styles.crypto}
-        onPress={() => openCryptoDetail(item.id)}>
-        <Text style={styles.name}>{item.name}</Text>
-        <Text style={styles.price}>{Math.round(item.price * 1000) / 1000}</Text>
-      </Pressable>
+      <View style={[styles.container]}>
+        <Pressable
+          style={styles.crypto}
+          onPress={() => openCryptoDetail(item.id)}>
+          <Text style={styles.name}>{item.name}</Text>
+          <Text style={styles.price}>{Math.round(item.price * 1000) / 1000}</Text>
+        </Pressable>
+      </View>
     );
   };
 
@@ -60,14 +42,14 @@ export const HomeScreen = ({ navigation }: { navigation: any }) => {
             <View style={{ width: 10, height: 3, marginVertical: 5, backgroundColor: LIGHTGREY }}></View>
           </View>
         </TouchableOpacity>
-        <Text style={{ fontSize: 25, fontWeight: "500", color: LIGHTBLACK }}>Wallet</Text>
+        {/*        <Text style={{ fontSize: 25, fontWeight: "500", color: LIGHTBLACK }}>Wallet</Text>*/}
         <TouchableOpacity><Icon name="wallet" size={24} color={LIGHTGREY} /></TouchableOpacity>
       </View>
-      <View style={styles.container}>
+      <View style={styles.container2}>
         <FlatList
           data={cryptoList}
           style={{ height: (Dimensions.get('window').height / 2) - 60 }}
-          ItemSeparatorComponent={() => <View style={{ marginVertical: 4 }}></View>}
+          ItemSeparatorComponent={() => <View style={{ marginVertical: 2 }}></View>}
           renderItem={renderItem}
           keyExtractor={item => item.id}
         />
@@ -75,7 +57,6 @@ export const HomeScreen = ({ navigation }: { navigation: any }) => {
       <View style={styles.footer}>
         <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%", paddingBottom: 40 }}>
           <Icon name="wallet" size={28} color={LIGHTBLACK} />
-          <Icon name="compass" size={28} color={LIGHTGREY} />
           <Icon name="notifications" size={28} color={LIGHTGREY} />
           <Icon name="settings-sharp" size={28} color={LIGHTGREY} />
         </View>
@@ -86,28 +67,39 @@ export const HomeScreen = ({ navigation }: { navigation: any }) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#272d42',
+    shadowColor: '#ADB7C3',
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 0.4,
+    shadowRadius: 15,
+    elevation: 3,
+  },
+  container2: {
+    backgroundColor: LIGHTGREY,
     flex: 1,
   },
   headerbar: {
-    paddingTop: 15,
-    paddingBottom: 2,
+    paddingTop: 25,
+    paddingBottom: 20,
     paddingHorizontal: 20,
     flexDirection: 'row',
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 10,
+    marginBottom: 20,
   },
   crypto: {
-    borderRadius: 5,
+    alignItems: "center",
+    borderRadius: 15,
     borderWidth: 1,
-    backgroundColor: '#000',
-    padding: 20,
+    backgroundColor: LIGHTBLACK,
+    paddingHorizontal: 30,
+    paddingVertical: 20,
     flex: 1,
     margin: 10,
+    marginTop: 15,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    height: 100,
   },
   name: {
     color: '#fff',
