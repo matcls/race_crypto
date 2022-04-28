@@ -50,7 +50,7 @@ export const DetailScreen = ({ route }: { route: any }) => {
           </View>
           <View style={styles.priceChanges}>
             <View style={styles.priceChangeRow}>
-              <Text style={styles.line}>Percent Change 1h</Text>
+              <Text style={styles.line}>Change 1h</Text>
               <Text style={styles.line}>
                 {` % ${convert(
                   cryptoMarketData.market_data.percent_change_usd_last_1_hour,
@@ -58,7 +58,7 @@ export const DetailScreen = ({ route }: { route: any }) => {
               </Text>
             </View>
             <View style={styles.priceChangeRow}>
-              <Text style={styles.line}>Percent Change 24h</Text>
+              <Text style={styles.line}>Change 24h</Text>
               <Text style={styles.line}>
                 {` % ${convert(
                   cryptoMarketData.market_data.percent_change_usd_last_24_hours,
