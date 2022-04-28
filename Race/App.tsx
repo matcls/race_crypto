@@ -7,7 +7,7 @@ import io from 'socket.io-client';
 
 const Stack = createNativeStackNavigator();
 
-export const socket = io('http://127.0.0.25:3000');
+export const socket = io('http://192.168.0.25:3000');
 
 socket.on('connect', () => {
   console.log('socket is connected');
