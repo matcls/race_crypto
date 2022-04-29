@@ -6,11 +6,18 @@ import {
   StyleSheet,
   ScrollView,
   useWindowDimensions,
+  TouchableOpacity,
+  FlatList,
+  Dimensions,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 import RenderHtml from 'react-native-render-html';
 import axios from 'axios';
 import { API_URL } from '../consts/app-consts';
 import { CryptoMarketDataInit, CryptoProfileInit } from '../models/crypto';
+import { useNavigation } from '@react-navigation/native';
+
+import { LIGHTGREY, LIGHTBLACK } from '../consts/app-consts';
 
 export const DetailScreen = ({ route }: { route: any }) => {
   const { width } = useWindowDimensions();
@@ -29,9 +36,19 @@ export const DetailScreen = ({ route }: { route: any }) => {
       setCryptoDataLoaded(true);
     });
   }, []);
+  const nav = useNavigation();
+
 
   return (
-    <>
+    <View style={{ height: "100%", backgroundColor: '#F5F8FF' }}>
+      <View style={styles.headerbar}>
+        <TouchableOpacity onPress={() => nav.goBack()}>
+          <Icon name="chevron-back-outline" size={28} color={LIGHTGREY} />
+        </TouchableOpacity>
+        {/*        <Text style={{ fontSize: 25, fontWeight: "500", color: LIGHTBLACK }}>{cryptoProfile.name}</Text>*/}
+        <TouchableOpacity><Icon name="ellipsis-vertical" size={26} color={LIGHTGREY} /></TouchableOpacity>
+      </View>
+
       {cryptoDataLoaded && (
         <View style={styles.container}>
           <View style={styles.header}>
@@ -50,15 +67,17 @@ export const DetailScreen = ({ route }: { route: any }) => {
           </View>
           <View style={styles.priceChanges}>
             <View style={styles.priceChangeRow}>
-              <Text style={styles.line}>Change 1h</Text>
+              <Text style={styles.change}>Change 1h</Text>
               <Text style={styles.line}>
                 {` % ${convert(
                   cryptoMarketData.market_data.percent_change_usd_last_1_hour,
                 )}`}
               </Text>
             </View>
+          </View>
+          <View style={styles.priceChanges}>
             <View style={styles.priceChangeRow}>
-              <Text style={styles.line}>Change 24h</Text>
+              <Text style={styles.change}>Change 24h</Text>
               <Text style={styles.line}>
                 {` % ${convert(
                   cryptoMarketData.market_data.percent_change_usd_last_24_hours,
@@ -87,27 +106,47 @@ export const DetailScreen = ({ route }: { route: any }) => {
               />
             </View>
           </ScrollView>
+          <View style={styles.footer}>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%", paddingBottom: 40 }}>
+              <Icon name="wallet" size={28} color={LIGHTBLACK} />
+              <Icon name="notifications" size={28} color={LIGHTGREY} />
+              <Icon name="settings-sharp" size={28} color={LIGHTGREY} />
+            </View>
+          </View>
         </View>
       )}
 
       {!cryptoDataLoaded && <ActivityIndicator size="large" color="#ffab00" />}
-    </>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#272d42',
+    backgroundColor: LIGHTGREY,
     padding: 10,
     flex: 1,
+
+  },
+  headerbar: {
+    paddingTop: 50,
+    paddingBottom: 20,
+    paddingHorizontal: 20,
+    flexDirection: "row",
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 20
   },
 
   header: {
-    backgroundColor: '#000',
+    backgroundColor: LIGHTBLACK,
     height: 100,
     padding: 10,
     borderRadius: 10,
     marginBottom: 15,
+    marginHorizontal: 20,
+
   },
 
   headerInfo: {
@@ -121,13 +160,13 @@ const styles = StyleSheet.create({
   },
 
   name: {
-    fontSize: 24,
+    fontSize: 26,
     color: '#fff',
   },
 
   symbol: {
-    fontSize: 15,
-    padding: 5,
+    fontSize: 18,
+    padding: 8,
     backgroundColor: '#272d42',
     color: '#fff',
   },
@@ -142,13 +181,21 @@ const styles = StyleSheet.create({
   line: {
     color: '#fff',
     fontSize: 16,
+
+  },
+  change: {
+    color: '#fff',
+    fontSize: 18,
+
   },
   priceChanges: {
-    backgroundColor: '#000',
+    backgroundColor: LIGHTBLACK,
     height: 70,
     padding: 10,
     borderRadius: 10,
     marginBottom: 15,
+    marginHorizontal: 20,
+
   },
   priceChangeRow: {
     flex: 1,
@@ -157,22 +204,35 @@ const styles = StyleSheet.create({
   },
 
   cryptoInfo: {
-    backgroundColor: '#000',
+    backgroundColor: LIGHTBLACK,
     padding: 10,
     flex: 1,
     borderRadius: 10,
     marginBottom: 15,
+    marginHorizontal: 20,
   },
   cryptoInfoTitle: {
     color: '#ffab00',
     fontSize: 22,
     marginBottom: 5,
+    marginTop: 10,
   },
   cryptoInfoRow: {
     flex: 1,
     marginBottom: 25,
+    padding: 4,
+  },
+  footer: {
+    position: 'absolute',
+    left: 1,
+    right: 1,
+    bottom: 0,
+    backgroundColor: '#fff',
+    paddingHorizontal: 25,
+    paddingTop: 20,
   },
 });
+
 
 const convert = (price: number) => {
   return Math.round(price * 100) / 100;
